@@ -2,6 +2,21 @@
 #include <stddef.h>
 #include <unistd.h>
 
+#define HDRSIZE 16
+#define CAPOFFSET(mem_size) (HDRSIZE + mem_size)
+#define ALIGNSIZE(size) (((size + 7) >> 3) << 3)
+
+/**
+ * chunk_hdr_t - header for each chunk
+ * @size: size of chunk
+ * @data_ptr: pointer to data
+ */
+
+typedef struct chunk_hdr_s
+{
+	size_t size;
+} chunk_hdr_t;
+
 /**
 * naive_malloc - allocates memory
 * @size: size of memory to be allocated
@@ -11,12 +26,20 @@
 
 void *naive_malloc(size_t size)
 {
-	void *prev_ptr;
+	static void *page_strt;
+	static void *nxt_chunk;
 
-	prev_ptr = sbrk(size);
+	if (!page_strt)
+	{
+		page_strt = sbrk(4096);
+		nxt_chunk = page_strt;
+	}
+	
+	void *new_chunk;
+	chunk_hdr_t *new_chunk_hdr;
 
-	if (prev_ptr == (void *) - 1)
-		return(NULL);
+	new_chunk_hdr = (chunk_hdr_t *) new_chunk;
+	size = ALIGNSIZE(size);
 
-	return (prev_ptr);
+	return (new_chunk);
 }
