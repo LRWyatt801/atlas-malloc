@@ -15,5 +15,8 @@ void *naive_malloc(size_t size)
 
 	prev_ptr = sbrk(size);
 
+	if (prev_ptr == (void *) - 1)
+		return(NULL);
+
 	return (prev_ptr);
 }
