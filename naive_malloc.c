@@ -5,18 +5,7 @@
 #define HDRSIZE 16
 #define CAPOFFSET(mem_size) (HDRSIZE + mem_size)
 #define ALIGNSIZE(size) (((size + 7) >> 3) << 3)
-#define NHDR_SIZE (sizeof(chunk_hdr_t))
-
-/**
- * chunk_hdr_t - header for each chunk
- * @size: size of chunk
- * @data_ptr: pointer to data
- */
-
-typedef struct chunk_hdr_s
-{
-	size_t size;
-} chunk_hdr_t;
+#define NHDR_SIZE (sizeof(nm_chunk_hdr_t))
 
 /**
 * naive_malloc - allocates memory
@@ -35,14 +24,14 @@ void *naive_malloc(size_t size)
 		page_strt = sbrk(4096);
 		nxt_chunk = page_strt;
 	}
-	
+
 	void *new_chunk;
-	chunk_hdr_t *new_chunk_hdr;
+	nm_chunk_hdr_t *new_chunk_hdr;
 
 	/* Set new_chunk == to end of allocated mem */
 	new_chunk = nxt_chunk;
 
-	new_chunk_hdr = (chunk_hdr_t *)new_chunk;
+	new_chunk_hdr = (nm_chunk_hdr_t *)new_chunk;
 	size = ALIGNSIZE(size);
 
 	new_chunk_hdr->size = size;
@@ -52,3 +41,4 @@ void *naive_malloc(size_t size)
 
 	return ((void *)((char *)new_chunk + NHDR_SIZE));
 }
+
