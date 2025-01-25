@@ -5,6 +5,7 @@
 #define HDRSIZE 16
 #define CAPOFFSET(mem_size) (HDRSIZE + mem_size)
 #define ALIGNSIZE(size) (((size + 7) >> 3) << 3)
+#define NHDR_SIZE (sizeof(chunk_hdr_t))
 
 /**
  * chunk_hdr_t - header for each chunk
@@ -38,8 +39,12 @@ void *naive_malloc(size_t size)
 	void *new_chunk;
 	chunk_hdr_t *new_chunk_hdr;
 
-	new_chunk_hdr = (chunk_hdr_t *) new_chunk;
+	new_chunk_hdr = (chunk_hdr_t *)new_chunk;
 	size = ALIGNSIZE(size);
 
-	return (new_chunk);
+	new_chunk_hdr->size = size;
+
+	nxt_chunk = (char *)new_chunk + NHDR_SIZE + size;
+
+	return ((void *)((char *)new_chunk + NHDR_SIZE));
 }
