@@ -8,13 +8,13 @@
 #define NHDR_SIZE (sizeof(nm_chunk_hdr_t))
 
 /**
-* naive_malloc - allocates memory
+* _malloc - allocates memory
 * @size: size of memory to be allocated
 *
 * Return: n/a
 **/
 
-void *naive_malloc(size_t size)
+void *_malloc(size_t size)
 {
 	static void *page_strt;
 	static void *nxt_chunk;
