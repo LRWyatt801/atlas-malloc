@@ -16,5 +16,5 @@ void _free(void *ptr)
 	}
 
 	m_chunk_hdr_t *chunk = (m_chunk_hdr_t *)((char *)ptr - MHDR_SIZE);
-	chunk = NULL;
+	chunk->inuse = 0;
 }

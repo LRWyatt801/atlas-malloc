@@ -21,12 +21,14 @@ typedef struct nm_chunk_hdr_s
 /**
  * struct m_chunk_hdr_s - header for each chunk
  * @size: size of chunk
+ * @inuse: size of in use mem
  * @next: pointer to the next chunk
  */
 
 typedef struct m_chunk_hdr_s
 {
 	size_t size;
+	size_t inuse;
 	struct m_chunk_hdr_s *next;
 } m_chunk_hdr_t;
 

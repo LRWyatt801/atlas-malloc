@@ -24,6 +24,7 @@ void *_malloc(size_t size)
 	static void *page_strt;
 	static void *page_end;
 	static void *heap_end;
+	size_t inuse;
 
 	if (!page_strt)
 	{
@@ -31,6 +32,7 @@ void *_malloc(size_t size)
 		heap_end = page_strt;
 		page_end = sbrk(0);
 	}
+	inuse = size;
 	size = ALIGNSIZE(size);
 	if (size > (REMAINING_PAGE(heap_end, page_end) + MHDR_SIZE))
 	{
@@ -46,6 +48,7 @@ void *_malloc(size_t size)
 
 	new_chunk_hdr = (m_chunk_hdr_t *)new_chunk_hdr;
 	new_chunk_hdr->size = size;
+	new_chunk_hdr->inuse = inuse;
 
 	return ((void *)((char *)new_chunk_hdr + MHDR_SIZE));
 }
