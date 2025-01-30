@@ -16,7 +16,7 @@
 * Return: n/a
 **/
 
-void *naive_malloc(size_t size)
+void *_malloc(size_t size)
 {
 	static void *page_strt;
 	static void *nxt_chunk;
