@@ -19,13 +19,11 @@
 void *naive_malloc(size_t size)
 {
 	static void *page_strt;
-	static void *page_end;
 	static void *nxt_chunk;
 
 	if (!page_strt)
 	{
 		page_strt = sbrk(PAGE_SIZE(size));
-		page_end = sbrk(0);
 		nxt_chunk = page_strt;
 	}
 
