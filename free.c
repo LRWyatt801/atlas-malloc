@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-#define NHDR_SIZE (sizeof(m_chunk_hdr_t))
+#define MHDR_SIZE (sizeof(m_chunk_hdr_t))
 
 /**
  * _free - frees a memory space
@@ -15,9 +15,6 @@ void _free(void *ptr)
 		return; /* Nothing to free */
 	}
 
-	m_chunk_hdr_t *chunk = (m_chunk_hdr_t *)((char *)ptr - NHDR_SIZE);
+	m_chunk_hdr_t *chunk = (m_chunk_hdr_t *)((char *)ptr - MHDR_SIZE);
 
-	/* Add the freed chunk to the front of the free list */
-	chunk->next = free_list;
-	free_list = chunk;
 }
