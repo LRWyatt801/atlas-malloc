@@ -7,7 +7,7 @@
 #define CAPOFFSET(mem_size) (HDRSIZE + mem_size)
 #define ALIGNSIZE(size) (((size + 7) >> 3) << 3)
 #define MHDR_SIZE (sizeof(m_chunk_hdr_t))
-#define PAGE_SIZE(size) ((size < STD_PGSIZE - MHDR_SIZE) : STD_PGSIZE ? (size + MHDR_SIZE))
+#define PAGE_SIZE(size) ((size < STD_PGSIZE - MHDR_SIZE) ? STD_PGSIZE : (size + MHDR_SIZE))
 
 /**
 * naive_malloc - allocates memory
