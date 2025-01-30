@@ -27,6 +27,7 @@ typedef struct nm_chunk_hdr_s
 typedef struct m_chunk_hdr_s
 {
 	size_t size;
+	size_t inuse;
 	struct m_chunk_hdr_s *next;
 } m_chunk_hdr_t;
 

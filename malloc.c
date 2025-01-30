@@ -7,7 +7,8 @@
 #define CAPOFFSET(mem_size) (HDRSIZE + mem_size)
 #define ALIGNSIZE(size) (((size + 7) >> 3) << 3)
 #define MHDR_SIZE (sizeof(m_chunk_hdr_t))
-#define PAGE_SIZE(size) ((size < STD_PGSIZE - MHDR_SIZE) ? STD_PGSIZE : (size + MHDR_SIZE))
+#define PAGE_SIZE(size) ((size < STD_PGSIZE - MHDR_SIZE) ? STD_PGSIZE : (ALIGNSIZE(size) + MHDR_SIZE))
+#define REMAINING_PAGE(heap_end, page_end) ((char *)page_end - (char *)heap_end)
 
 /**
 * naive_malloc - allocates memory
@@ -19,28 +20,31 @@
 void *_malloc(size_t size)
 {
 	static void *page_strt;
-	static void *nxt_chunk;
+	static void *page_end;
+	static void *heap_end;
 
 	if (!page_strt)
 	{
 		page_strt = sbrk(PAGE_SIZE(size));
-		nxt_chunk = page_strt;
+		heap_end = page_strt;
+		page_end = sbrk(0);
+	}
+	size = ALIGNSIZE(size);
+	if (size > (REMAINING_PAGE(heap_end, page_end) + MHDR_SIZE))
+	{
+		page_strt = sbrk(PAGE_SIZE(size));
+		heap_end = page_strt;
+		page_end = sbrk(0);
 	}
 
-	void *new_chunk;
-	nm_chunk_hdr_t *new_chunk_hdr;
+	m_chunk_hdr_t *new_chunk_hdr = page_strt;
 
-	/* Set new_chunk == to end of allocated mem */
-	new_chunk = nxt_chunk;
+	if (new_chunk_hdr->next != NULL)
+		new_chunk_hdr = new_chunk_hdr->next;
 
-	new_chunk_hdr = (nm_chunk_hdr_t *)new_chunk;
-	size = ALIGNSIZE(size);
-
+	new_chunk_hdr = (m_chunk_hdr_t *)new_chunk_hdr;
 	new_chunk_hdr->size = size;
 
-	/* update nxt_chunk to end of allocated mem */
-	nxt_chunk = (char *)new_chunk + MHDR_SIZE + size;
-
-	return ((void *)((char *)new_chunk + MHDR_SIZE));
+	return ((void *)((char *)new_chunk_hdr + MHDR_SIZE));
 }
 
